@@ -3,7 +3,7 @@
 FROM alpine:3.24@sha256:be2656061b536c1883c4034790e21d0a09c5aaaf51968b89368a3c0371ea2c9a
 
 # x-release-please-start-version
-LABEL org.opencontainers.image.version="0.0.0"
+LABEL org.opencontainers.image.version="0.1.0"
 # x-release-please-end
 LABEL org.opencontainers.image.title="Blueprint Container Test" \
       org.opencontainers.image.description="A throwaway container image that proves the isolated image build of the blueprint, for repo-blueprint#531." \
