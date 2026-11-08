@@ -1,0 +1,78 @@
+name: Issue assistant
+
+# A first analysis of new issues, the labels of the issue forms and the answers that
+# the assistant or the maintainer waits for: https://github.com/Dennis-Otto/issue-assistant
+#
+# The jobs are the issue assistant's reusable workflow at the commit of a release, so
+# an update is a move of the pin below. event and apply run no AI; analyze runs the
+# engine of .github/issue-assistant/config.toml with a read-only token and read-only
+# tools on the egress-firewall runner (.github/egress-firewall.yaml), and apply
+# checks its answer before anything is written. The permissions below are the most
+# that any of its jobs gets.
+#
+# Without the engine's secret in the environment issue-assistant, or with the
+# repository variable ISSUE_ASSISTANT_AI set to "off", only labels and the lifecycle
+# work. The issue assistant's check command keeps this file equal to its template.
+#
+# A run by hand, also through the REST API, answers an issue that has no comment of
+# its task yet. Someone with write access starts it, and may add an instruction; a
+# maintainer, with the role admin or maintain, may tick override to have the
+# assistant answer again past its one comment. The job event checks the role of
+# the person who started the run, and its summary records every override.
+
+on:
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: Number of the issue
+        required: true
+        type: number
+      mode:
+        description: Task of the assistant
+        type: choice
+        options: [triage, follow-up, maintainer-reply, release-reply, maintainer-question]
+        default: triage
+      instruction:
+        description: What the assistant should do, such as "ask for the logs" (triage and follow-up)
+        type: string
+        default: ""
+      override:
+        description: Answer again past the one comment of the task (maintainers only)
+        type: boolean
+        default: false
+      dry_run:
+        description: Only show what the assistant would do
+        type: boolean
+        default: true
+
+permissions: {}
+
+# The runs of one issue run one after the other. Up to 100 wait their turn, first
+# in, first out, so an answer written while an analysis runs is never dropped.
+concurrency:
+  group: issue-assistant-${{ github.event.issue.number || inputs.issue }}
+  cancel-in-progress: false
+  queue: max
+
+jobs:
+  assistant:
+    name: Issue assistant
+    permissions:
+      contents: read
+      issues: write
+      discussions: read
+    uses: Dennis-Otto/issue-assistant/.github/workflows/reusable-issue-assistant.yml@8af682441bf4881f42b626caaa3061953a677481 # v1.10.0
+    with:
+      dry_run: ${{ inputs.dry_run || false }}
+    # Passed by name: only the job analyze sees their values, those of the
+    # environment issue-assistant, which only the default branch may use.
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      COPILOT_GITHUB_TOKEN: ${{ secrets.COPILOT_GITHUB_TOKEN }}

@@ -1,0 +1,28 @@
+# The answers of the blueprint (https://github.com/Dennis-Otto/repo-blueprint);
+# `copier update` reads them to bring the repository up to the latest release.
+# Change them only with `copier update --data name=value`.
+_commit: v1.12.0
+_src_path: https://github.com/Dennis-Otto/repo-blueprint.git
+author: Dennis Otto
+copyright: 2026 Dennis Otto
+description: A throwaway container image that proves the isolated image build of the
+    blueprint, for repo-blueprint#531.
+discussions: false
+homepage: https://dennis-otto.github.io/blueprint-container-test/
+issue_assistant_ai: false
+languages: []
+license: MIT
+owner: Dennis-Otto
+project_name: Blueprint Container Test
+project_slug: blueprint-container-test
+project_type: container
+release_app: dennis-otto-release-automation
+release_app_client_id: Iv23liP9PIEHOV74AiIA
+release_app_id: '4739928'
+renovate_runner: hub
+sample_code: true
+sponsor: Dennis-Otto
+successor: false
+test_marker: ''
+test_workflows: ''
+topics: docker, container, ghcr
