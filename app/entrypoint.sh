@@ -13,4 +13,4 @@ if [ "${1:-}" = "--self-test" ]; then
   exit 0
 fi
 
-echo "Hello from Blueprint Container Test!"
+echo "Hello from Blueprint Container Test, an image built and attested in an isolated workflow!"
