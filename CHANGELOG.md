@@ -6,3 +6,9 @@ release bot makes that text the section of the next release, or lists the pull
 requests when there is none.
 
 ## Unreleased
+
+## 0.1.0 (2026-11-08)
+
+### Features
+
+- The image greets you and says that an isolated workflow built and attested it.
